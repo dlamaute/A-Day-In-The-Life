@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Filter</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  	<script type="text/javascript" src="http://d3js.org/d3.v5.min.js"></script>
+  	<style>
+      h1 {
+          color: gray;
+          font-family: Helvetica, sans-serif; 
+        }
+
+      h2 {
+        color: gray;
+        font-family: Helvetica, sans-serif; 
+      }
+      span, p {
+        color: gray;
+        font-family: Helvetica, sans-serif;
+      }
+      #filters{
+        font-family: Helvetica;
+        color: white;
+        border: none;
+      }
+      .filterOption{
+        padding: 16px;
+        border-width: 1px;
+        margin: 8px;
+        height: 48px;
+        background-color: #4C4C4C;
+        color: white;
+        font-size: 16px;
+        font-family: Helvetica
+      }
+
+      /* #graphsContainer {
+        display: grid;
+        grid-gap: 100px;
+        grid-template-columns: repeat(2, 1fr);
+        grid-auto-rows: 60px;
+      } */
+
+      /* #row{
+        padding: 16px
+      } */
+
+      .graph {
+        border-radius: 3px;
+        padding: 0.5em;
+        margin: 1em;
+        background-color: #aeaeae ;
+      }
+
+    </style>
+  </head>
+
+  <body>
+    <div id="main-wrapper">
+      <h1> A day in the life</h1>
+      <h2>What is it like to struggle with depression?</h2>
+      <p> Find individual stories for... <p/>
+      
+      <div id="filters" class="">
+        <select id="Age" class="filterOption"></select>
+        <span>year old</span>
+        <select id="Gender" class="filterOption"></select>
+        <span>people who identify as</span>
+        <select id="Sexual_Identity" class="filterOption"></select>
+        <span>with a total family income of</span>
+        <select id="Total_Family_Income" class="filterOption"></select>
+        </span>.</span>
+      </div>
+
+      <div id="graphsContainer"></div>
+        <table id="graphs">
+        <tr class="row topRow"> 
+          <td id="graph1" class="graph"></td> 
+          <td id="graph2" class="graph"></td>
+        </tr>
+        <tr class="row bottomRow">
+          <td id="graph3" class="graph"></td>
+          <td id="graph4" class="graph"></td>
+        </tr>
+      </table>
+    </div>
+  </body>
+
+  <script type="text/javascript">
+
+    var chartMargin = 60;
+    var chartHeight = 1000;
+    var chartWidth = 1000;
+
+    var graphMargin = 15;
+    var graphHeight = 30;
+    var graphWidth = 30;
+
+    var fakeData = [
+      {"age":"24-25", "sex": "Male", "orientation": "Homosexual", "income": "$50,000-$74,999", "marital_status": "Married"},
+      {"age":"65+", "sex": "Female", "orientation": "Bisexual", "income": "$30,000-$39,999", "marital_status": "Widowed"},
+      {"age":"18", "sex": "Female", "orientation": "Heterosexual", "income": "Less than $10,000 (including loss)", "marital_status": "Never Been Married"},
+      {"age":"40-44", "sex": "Male", "orientation": "Heterosexual", "income": "$75,000 or more", "marital_status": "Never Been Married"},
+      {"age":"50-64", "sex": "Female", "orientation": "Homosexual", "income": "$75,000 or more", "marital_status": "Divorced or Separated"},
+    ];
+
+    /* var randomData = randomEntries(data); */
+
+    // for headers & drop down values
+    var key = {
+      "Age": ["18", "19", "20", "21", "23-22", "24-25", "26-29", "30-34", "35-39", "40-44", "45-49", "50-64", "65+"],
+      "Gender": ["Male", "Female"],
+      "Sexual_Identity": ["Heterosexual", "Homosexual", "Bisexual"],
+      "Total_Family_Income": ["Less than $10,000 (including loss)", "$10,000 - $19,999", "$20,000 - $29,999", "$30,000 - $39,999", "$40,000 - $49,999", "$50,000 - $74,999", "$75,000 or more"]
+    }
+
+    var plotLayout = {
+        polar: {
+          radialaxis: {
+            visible: true,
+            range: [0, 10]
+          }
+        },
+        showlegend: false
+      }
+
+    // for using csv
+    d3.csv('data/a3_df_inverted.csv')
+    .then(function(data) {
+      var randomData = randomEntries(data);
+
+      var selectRow = d3.select("#filters")
+      .attr("style", "display: inline-block;");
+    
+      var selectAge = selectRow.select("#Age")
+        .on("change", update);
+      var selectGender = selectRow.select("#Gender")
+        .on("change", update);
+      var selectOrientation = selectRow.select("#Sexual_Identity")
+        .on("change", update);
+      var selectIncome = selectRow.select("#Total_Family_Income")
+        .on("change", update);
+
+      var valuesAge = ["Any Age"].concat(key.Age);
+      var valuesGender = ["Any Gender"].concat(key.Gender);
+      var valuesOrientation = ["Any Sexual Identity"].concat(key.Sexual_Identity);
+      var valuesIncome = ["Any Income"].concat(key.Total_Family_Income);
+
+      var optionsAge = selectAge.selectAll(null)
+        .data(valuesAge)
+        .enter()
+        .append("option")
+        .text(function(d) {return d;});
+      var optionsGender = selectGender.selectAll(null)
+        .data(valuesGender)
+        .enter()
+        .append("option")
+        .text(function(d) {return d;});
+      var optionsOrientation = selectOrientation.selectAll(null)
+        .data(valuesOrientation)
+        .enter()
+        .append("option")
+        .text(function(d) {return d;});
+      var optionsIncome = selectIncome.selectAll(null)
+        .data(valuesIncome)
+        .enter()
+        .append("option")
+        .text(function(d) {return d;});
+
+      var graphsContainer = d3.select("#graphsContainer")
+        .attr("width", chartWidth + 2*chartMargin)
+        .attr("height", chartHeight + 2*chartMargin)
+        .attr("style", "display: inline-block;");
+
+      data1 = setupPlotData(randomData[0]);
+      data2 = setupPlotData(randomData[1]);
+      data3 = setupPlotData(randomData[2]);
+      data4 = setupPlotData(randomData[3]);
+
+      Plotly.plot("graph1", data1, plotLayout, {showSendToCloud: false, displayModeBar: false, staticPlot: true});
+      Plotly.plot("graph2", data2, plotLayout, {showSendToCloud: false, displayModeBar: false, staticPlot: true});
+      Plotly.plot("graph3", data3, plotLayout, {showSendToCloud: false, displayModeBar: false, staticPlot: true});
+      Plotly.plot("graph4", data4, plotLayout, {showSendToCloud: false, displayModeBar: false, staticPlot: true});
+
+      // temporary for the text. will be replaced with plotly calls, actually
+      /* d3.select("#graph1")
+        .text(
+          "Age: " + randomData[0].Age + ", " + 
+          "Gender: " + randomData[0].Gender + ", " +
+          "Sexual Orientation: " + randomData[0].Sexual_Identity
+        );
+
+      d3.select("#graph2")
+        .text(
+          "Age: " + randomData[1].Age + ", " + 
+          "Gender: " + randomData[1].Gender + ", " +
+          "Sexual Orientation: " + randomData[1].Sexual_Identity
+        );
+
+      d3.select("#graph3")
+        .text(
+          "Age: " + randomData[2].Age + ", " + 
+          "Gender: " + randomData[2].Gender + ", " +
+          "Sexual Orientation: " + randomData[2].Sexual_Identity
+        );
+
+      d3.select("#graph4")
+        .text(
+          "Age: " + randomData[3].Age + ", " + 
+          "Gender: " + randomData[3].Gender + ", " +
+          "Sexual Orientation: " + randomData[3].Sexual_Identity
+        ); */
+
+      // text representation
+
+      /* graphs.enter()
+        .append("text")
+        .attr("class", "graph")
+        .text(function(d) {
+          var age = "Age: " + d.Age;
+          var sex = "Gender: " + d.Gender;
+          var orientation = "Sexual Orientation: " + d.Sexual_Identity;
+          return age + ", " + sex + ", " + orientation + ".  "; 
+      }); */
+
+      function update() {
+        var choices = {};
+        d3.selectAll(".filterOption")
+          .each(function(d) {
+            if (!this.value.startsWith("Any")) {
+              choices[this.id] = this.value;
+            }
+          });
+
+        var randomNewData;
+        if (d3.keys(choices).length > 0) {
+          var newData = data.filter(function(d,i) {
+            var valid = true;
+            for (var prop in choices) {
+              if (d[prop] != choices[prop]) {
+                valid = false;
+                break;
+              }
+            }
+            if (valid) {
+              return d;
+            }
+          });
+          randomNewData = randomEntries(newData);
+          console.log(randomNewData, "subdata");
+        } else {
+          randomNewData = randomEntries(data);
+          console.log(randomNewData, "general data");
+        }
+
+        // temporary for the text. will be replaced with plotly calls, actually
+      /* d3.select("#graph1")
+        .text(
+          "Age: " + randomData[0].Age + ", " + 
+          "Gender: " + randomData[0].Gender + ", " +
+          "Sexual Orientation: " + randomData[0].Sexual_Identity
+        );
+
+      d3.select("#graph2")
+        .text(
+          "Age: " + randomData[1].Age + ", " + 
+          "Gender: " + randomData[1].Gender + ", " +
+          "Sexual Orientation: " + randomData[1].Sexual_Identity
+        );
+
+      d3.select("#graph3")
+        .text(
+          "Age: " + randomData[2].Age + ", " + 
+          "Gender: " + randomData[2].Gender + ", " +
+          "Sexual Orientation: " + randomData[2].Sexual_Identity
+        );
+
+      d3.select("#graph4")
+        .text(
+          "Age: " + randomData[3].Age + ", " + 
+          "Gender: " + randomData[3].Gender + ", " +
+          "Sexual Orientation: " + randomData[3].Sexual_Identity
+        ); */
+      data1 = setupPlotData(randomNewData[0]);
+      data2 = setupPlotData(randomNewData[1]);
+      data3 = setupPlotData(randomNewData[2]);
+      data4 = setupPlotData(randomNewData[3]);
+
+      Plotly.restyle("graph1", data1);
+      Plotly.restyle("graph2", data2);
+      Plotly.restyle("graph3", data3);
+      Plotly.restyle("graph4", data4);
+
+      // console.log(randomNewData, "new data");
+
+      /* var newGraphs = graphsContainer.selectAll(".graph")
+        .data(randomNewData, function(d) {
+          if (randomNewData.includes(d)) {
+            // console.log(graphs.data(), "-- graphs data");
+            return d;
+          }
+        });
+
+      console.log(newGraphs.data(), "new graph data");
+
+      newGraphs.enter()
+        .append("text")
+        .attr("class", "graph")
+        .text(function(d) {
+          console.log(d, "--d");
+          var age = "Age: " + d.Age;
+          var sex = "Gender: " + d.Gender;
+          var orientation = "Sexual Orientation: " + d.Sexual_Identity;
+          return "new " + age + ", " + sex + ", " + orientation + ".  ";
+        });
+
+        newGraphs.exit().remove();*/
+      }
+
+    })
+    .catch(function(error) {
+      console.log(error, ": could not load csv");
+    });
+
+    function randomEntries(d) {
+      var n = d.length;
+      var dCopy = Object.assign([], d);
+
+      values = [];
+      for (i = 0; i < 4; i++) {
+        idx = d3.randomUniform(n)();
+        values = values.concat(dCopy.splice(idx, 1));
+        n -= 1;
+        if (n == 0) {
+          break;
+        }
+      }
+
+      return values;
+    }
+
+    function setupPlotData(d) {
+        console.log(d);
+        r = [d.ADPSWORK, d.ADPSRELS, d.ADPSSOC, d.ADPSHMGT, d.ADPSWORK];
+        return [{
+        type: 'scatterpolar',
+        r: r,
+        theta: ['Work','Relationships','Social', 'Home Management', 'Work'],
+        fill: 'toself',
+             fillcolor: 'rgba(255,255,191,.50)',
+             line: {color:'rgba(255,5,191,.50)', shape: "spline", smoothing:1.3},
+             marker: {color:'rgba(25,5,191,.50)' }
+
+        }]
+      }
+
+    function updatePlotData(d)
+
+  </script>
