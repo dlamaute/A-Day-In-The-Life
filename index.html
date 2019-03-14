@@ -130,8 +130,6 @@
           <tr> 
             <td id="graph1Container" class="graph"><div id="graph1"></div><div class="graphText">Placeholder Text</div></td>
             <td id="graph2Container" class="graph"><div id="graph2"></div><div class="graphText">Placeholder Text</div></td>
-          </tr>
-          <tr>
             <td id="graph3Container" class="graph"><div id="graph3"></div><div class="graphText">Placeholder Text</div></td>
             <td id="graph4Container" class="graph"><div id="graph4"></div><div class="graphText">Placeholder Text</div></td>
           </tr>
@@ -296,7 +294,7 @@
         var g4c = d3.select("#graph4Container");
 
         if (data1.length > 0) {
-          g2c.attr("style", "display: block;")
+          g2c.attr("style", "display: inline-block;")
             .attr("width", graphWidth);
           Plotly.react("graph1", data1, plotLayout, plotAddlParams);
         } else {
@@ -304,7 +302,7 @@
           g1c.attr("style", "display: none;");
         }
         if (data2.length > 0) {
-          g2c.attr("style", "display: block;")
+          g2c.attr("style", "display: inline-block;")
             .attr("width", graphWidth);
           Plotly.react("graph2", data2, plotLayout, plotAddlParams);
         } else {
@@ -312,7 +310,7 @@
           g2c.attr("style", "display: none;");
         }
         if (data3.length > 0) {
-          g3c.attr("style", "display: block;")
+          g3c.attr("style", "display: inline-block;")
             .attr("width", graphWidth);
           Plotly.react("graph3", data3, plotLayout, plotAddlParams);
         } else {
@@ -320,7 +318,7 @@
           g3c.attr("style", "display: none;");
         }
         if (data4.length > 0) {
-          g4c.attr("style", "display: block;")
+          g4c.attr("style", "display: inline-block;")
             .attr("width", graphWidth);
           Plotly.react("graph4", data4, plotLayout, plotAddlParams);
         } else {
