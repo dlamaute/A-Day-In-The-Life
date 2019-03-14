@@ -34,23 +34,28 @@
         font-family: Helvetica
       }
 
-      /* #graphsContainer {
-        display: grid;
-        grid-gap: 100px;
-        grid-template-columns: repeat(2, 1fr);
-        grid-auto-rows: 60px;
-      } */
-
-      /* #row{
-        padding: 16px
-      } */
+      #graphs {
+        display: inline-block;
+        width: 80%;
+      }
 
       .graph {
         border-radius: 3px;
         padding: 0.5em;
         margin: 1em;
-        background-color: #aeaeae ;
+        background-color: #aeaeae;
+        width: 50%;
+        height: 50%;
       }
+
+      #legend {
+        display: inline-block; 
+        position: relative; 
+        width: 20%;
+        top: 0px;
+      }
+
+
 
     </style>
   </head>
@@ -74,15 +79,16 @@
 
       <div id="graphsContainer">
         <table id="graphs">
-          <tr class="row topRow"> 
+          <tr> 
             <td id="graph1Container" class="graph"><div id="graph1"></div><div class="graphText">Placeholder Text</div></td>
             <td id="graph2Container" class="graph"><div id="graph2"></div><div class="graphText">Placeholder Text</div></td>
           </tr>
-          <tr class="row bottomRow">
+          <tr>
             <td id="graph3Container" class="graph"><div id="graph3"></div><div class="graphText">Placeholder Text</div></td>
             <td id="graph4Container" class="graph"><div id="graph4"></div><div class="graphText">Placeholder Text</div></td>
           </tr>
         </table>
+        <div id="legend" class="graph"></div>
       </div>
     </div>
   </body>
@@ -93,8 +99,10 @@
     var chartHeight = 1000;
     var chartWidth = 1000;
 
-    var graphHeight = 400;
-    var graphWidth = 400;
+    var graphHeight = "25%";
+    var graphWidth = "25%";
+
+    var legendWidth = "20%";
 
     var fakeData = [
       {"age":"24-25", "sex": "Male", "orientation": "Homosexual", "income": "$50,000-$74,999", "marital_status": "Married"},
@@ -173,6 +181,14 @@
         .attr("width", chartWidth + 2*chartMargin)
         .attr("height", chartHeight + 2*chartMargin)
         .attr("style", "display: inline-block;");
+
+      var graphs = d3.select("#graphs")
+        .attr("width", "80%")
+        .attr("style", "display: inline-block; position: relative; float: left;");
+
+      var legend = d3.select("#legend")
+        .attr("width", legendWidth)
+        .attr("height", 2*graphHeight);
 
       data1 = setupPlotData(randomData[0]);
       data2 = setupPlotData(randomData[1]);
