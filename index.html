@@ -182,8 +182,7 @@
         width: parseInt(graphWidth),
         height: parseInt(graphHeight),
         showlegend: false,
-        paper_bgcolor: "rgba(0, 0, 0, 0)",
-        plot_bgcolor: "rgba(0, 0, 0, 0)"
+        paper_bgcolor: "rgba(0, 0, 0, 0)"
       };
 
     var plotAddlParams = {
@@ -238,7 +237,7 @@
       var graphsContainer = d3.select("#graphsContainer")
         .attr("width", chartWidth + chartMargin)
         .attr("height", chartHeight + chartMargin)
-        .attr("style", "display: inline-block; position: relative; top: -50px;");
+        .attr("style", "display: inline-block;"); //position: relative; top: -50px;");
 
       data1 = setupPlotData(randomData[0]);
       data2 = setupPlotData(randomData[1]);
