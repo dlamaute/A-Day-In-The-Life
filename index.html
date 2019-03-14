@@ -170,7 +170,17 @@
         polar: {
           radialaxis: {
             visible: true,
-            range: [0, 5]
+            range: [0, 5], tickmode:"array",
+        tickvals:[1,2,3,4,5],
+              tickfont:{color:'rgba(10,10,10,.650)'},
+        dtick:1,
+              ticklen:5,
+              tickcolor: 'rgba(10,10,10,.40)',
+        linecolor: 'rgba(0,0,00,0.15)',
+        showgrid: true,
+        gridcolor: 'rgba(0,0,0,0.1)',
+        layer: "belowtraces",
+        hoverinfo:"all"
           }
         },
         xaxis: {
