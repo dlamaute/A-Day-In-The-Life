@@ -4,34 +4,58 @@
     <title>Filter</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   	<script type="text/javascript" src="http://d3js.org/d3.v5.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
   	<style>
       h1 {
           color: gray;
-          font-family: Helvetica, sans-serif; 
+          font-family: 'Montserrat', sans-serif; 
+          margin: 8px;
+          margin-top: 16px;
         }
 
       h2 {
         color: gray;
-        font-family: Helvetica, sans-serif; 
+        font-family: 'Montserrat', sans-serif; 
+        margin: 24px; 
       }
-      span, p {
+      
+      h3 {
         color: gray;
-        font-family: Helvetica, sans-serif;
+        font-family: 'Montserrat', sans-serif;
+        margin: 24px; 
+      }
+      
+      p {
+        color: gray;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 14px;
+        margin: 8px;
+        margin-left: 24px;
+      }
+      
+      span {
+        color: gray;
+        font-family: 'Montserrat', sans-serif;
+        margin: 14px; 
       }
       #filters{
-        font-family: Helvetica;
+        font-family: 'Montserrat';
         color: white;
         border: none;
+        margin-left: 24px;
+        width: 60vw;
       }
+      
       .filterOption{
-        padding: 16px;
         border-width: 1px;
-        margin: 8px;
-        height: 48px;
-        background-color: #4C4C4C;
+        margin-right: 8px;
+        margin-bottom: 8px;
+        margin-top: 8px;
+        height: 32px;
+        background-color: #aeaeae;
         color: white;
-        font-size: 16px;
-        font-family: Helvetica
+        font-size: 14px;
+        font-family: 'Montserrat'
       }
 
       #graphs {
@@ -41,11 +65,11 @@
 
       .graph {
         border-radius: 3px;
-        padding: 0.5em;
-        margin: 1em;
-        background-color: #aeaeae;
-        width: 50%;
-        height: 50%;
+        padding: 4px;
+        margin: 8;
+        background-color: #ffffff;
+        width: 20vw;
+        height: 20vh;
       }
 
       #legend {
@@ -53,17 +77,17 @@
         position: relative; 
         width: 20%;
         top: 0px;
+        background-color: #C4C4C4;
+        margin: 24px;
       }
-
-
 
     </style>
   </head>
 
   <body>
     <div id="main-wrapper">
-      <h1> A day in the life</h1>
-      <h2>What is it like to struggle with depression?</h2>
+      <h2> Four days in the life</h1> <span><img src="a3-legend-03.png" alt="legend" style="float:right;width:326px;"></span>
+      <h3>What is it like to struggle with depression?</h2>
       <p> Find individual stories for... <p/>
       
       <div id="filters" class="">
@@ -82,9 +106,7 @@
           <tr> 
             <td id="graph1Container" class="graph"><div id="graph1"></div><div class="graphText">Placeholder Text</div></td>
             <td id="graph2Container" class="graph"><div id="graph2"></div><div class="graphText">Placeholder Text</div></td>
-          </tr>
-          <tr>
-            <td id="graph3Container" class="graph"><div id="graph3"></div><div class="graphText">Placeholder Text</div></td>
+             <td id="graph3Container" class="graph"><div id="graph3"></div><div class="graphText">Placeholder Text</div></td>
             <td id="graph4Container" class="graph"><div id="graph4"></div><div class="graphText">Placeholder Text</div></td>
           </tr>
         </table>
@@ -95,12 +117,12 @@
 
   <script type="text/javascript">
 
-    var chartMargin = 60;
-    var chartHeight = 1000;
-    var chartWidth = 1000;
+    var chartMargin = "8px";
+    var chartHeight = "20vh";
+    var chartWidth = "20vw";
 
-    var graphHeight = "25%";
-    var graphWidth = "25%";
+    var graphHeight = "350";
+    var graphWidth = "350";
 
     var legendWidth = "20%";
 
@@ -184,8 +206,8 @@
         .text(function(d) {return d;});
 
       var graphsContainer = d3.select("#graphsContainer")
-        .attr("width", chartWidth + 2*chartMargin)
-        .attr("height", chartHeight + 2*chartMargin)
+        .attr("width", chartWidth + chartMargin)
+        .attr("height", chartHeight + chartMargin)
         .attr("style", "display: inline-block;");
 
       var graphs = d3.select("#graphs")
@@ -313,9 +335,9 @@
         r: radii,
         theta: ['Work', 'Relationships', 'Social', 'Home Management', 'Work'],
         fill: 'toself',
-             fillcolor: 'rgba(255, 255, 191, .50)',
-             line: {color: 'rgba(255, 5, 191, .50)', shape: "spline", smoothing: 1.3},
-             marker: {color: 'rgba(25, 5, 191, .50)' }
+             fillcolor: 'rgba(124, 249, 249, .50)',
+             line: {color: 'rgba(124, 249, 249, 1)', shape: "spline", smoothing: 1.3},
+             marker: {color: 'rgba(177, 177, 180, 1)' }
         }]
       } else {
         return [];
