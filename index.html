@@ -92,9 +92,8 @@
     var chartHeight = 1000;
     var chartWidth = 1000;
 
-    var graphMargin = 15;
-    var graphHeight = 30;
-    var graphWidth = 30;
+    var graphHeight = 400;
+    var graphWidth = 400;
 
     var fakeData = [
       {"age":"24-25", "sex": "Male", "orientation": "Homosexual", "income": "$50,000-$74,999", "marital_status": "Married"},
@@ -121,6 +120,8 @@
             range: [0, 10]
           }
         },
+        width: graphWidth,
+        height: graphHeight,
         showlegend: false
       }
 
@@ -211,18 +212,6 @@
           "Sexual Orientation: " + randomData[3].Sexual_Identity
         ); */
 
-      // text representation
-
-      /* graphs.enter()
-        .append("text")
-        .attr("class", "graph")
-        .text(function(d) {
-          var age = "Age: " + d.Age;
-          var sex = "Gender: " + d.Gender;
-          var orientation = "Sexual Orientation: " + d.Sexual_Identity;
-          return age + ", " + sex + ", " + orientation + ".  "; 
-      }); */
-
       function update() {
         var choices = {};
         d3.selectAll(".filterOption")
@@ -281,40 +270,18 @@
           "Gender: " + randomData[3].Gender + ", " +
           "Sexual Orientation: " + randomData[3].Sexual_Identity
         ); */
-      data1 = setupPlotData(randomNewData[0]);
-      data2 = setupPlotData(randomNewData[1]);
-      data3 = setupPlotData(randomNewData[2]);
-      data4 = setupPlotData(randomNewData[3]);
+      data1 = updatePlotData(randomNewData[0]);
+      data2 = updatePlotData(randomNewData[1]);
+      data3 = updatePlotData(randomNewData[2]);
+      data4 = updatePlotData(randomNewData[3]);
+
+      console.log(data1);
 
       Plotly.restyle("graph1", data1);
       Plotly.restyle("graph2", data2);
       Plotly.restyle("graph3", data3);
       Plotly.restyle("graph4", data4);
 
-      // console.log(randomNewData, "new data");
-
-      /* var newGraphs = graphsContainer.selectAll(".graph")
-        .data(randomNewData, function(d) {
-          if (randomNewData.includes(d)) {
-            // console.log(graphs.data(), "-- graphs data");
-            return d;
-          }
-        });
-
-      console.log(newGraphs.data(), "new graph data");
-
-      newGraphs.enter()
-        .append("text")
-        .attr("class", "graph")
-        .text(function(d) {
-          console.log(d, "--d");
-          var age = "Age: " + d.Age;
-          var sex = "Gender: " + d.Gender;
-          var orientation = "Sexual Orientation: " + d.Sexual_Identity;
-          return "new " + age + ", " + sex + ", " + orientation + ".  ";
-        });
-
-        newGraphs.exit().remove();*/
       }
 
     })
@@ -340,7 +307,6 @@
     }
 
     function setupPlotData(d) {
-        console.log(d);
         r = [d.ADPSWORK, d.ADPSRELS, d.ADPSSOC, d.ADPSHMGT, d.ADPSWORK];
         return [{
         type: 'scatterpolar',
@@ -354,6 +320,11 @@
         }]
       }
 
-    function updatePlotData(d) {}
+    function updatePlotData(d) {
+      console.log(d, "-- d");
+      r = [d.ADPSWORK, d.ADPSRELS, d.ADPSSOC, d.ADPSHMGT, d.ADPSWORK];
+      console.log(r, "-- r");
+      return { r: r };
+    }
 
   </script>
