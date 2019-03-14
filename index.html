@@ -207,34 +207,6 @@
       Plotly.plot("graph3", data3, plotLayout, plotAddlParams);
       Plotly.plot("graph4", data4, plotLayout, plotAddlParams);
 
-      // temporary for the text. will be replaced with plotly calls, actually
-      /* d3.select("#graph1")
-        .text(
-          "Age: " + randomData[0].Age + ", " + 
-          "Gender: " + randomData[0].Gender + ", " +
-          "Sexual Orientation: " + randomData[0].Sexual_Identity
-        );
-
-      d3.select("#graph2")
-        .text(
-          "Age: " + randomData[1].Age + ", " + 
-          "Gender: " + randomData[1].Gender + ", " +
-          "Sexual Orientation: " + randomData[1].Sexual_Identity
-        );
-
-      d3.select("#graph3")
-        .text(
-          "Age: " + randomData[2].Age + ", " + 
-          "Gender: " + randomData[2].Gender + ", " +
-          "Sexual Orientation: " + randomData[2].Sexual_Identity
-        );
-
-      d3.select("#graph4")
-        .text(
-          "Age: " + randomData[3].Age + ", " + 
-          "Gender: " + randomData[3].Gender + ", " +
-          "Sexual Orientation: " + randomData[3].Sexual_Identity
-        ); */
 
       function update() {
         var choices = {};
@@ -266,51 +238,44 @@
           console.log(randomNewData, "general data");
         }
 
-        // temporary for the text. will be replaced with plotly calls, actually
-      /* d3.select("#graph1")
-        .text(
-          "Age: " + randomData[0].Age + ", " + 
-          "Gender: " + randomData[0].Gender + ", " +
-          "Sexual Orientation: " + randomData[0].Sexual_Identity
-        );
+        var data1 = setupPlotData(randomNewData[0]);
+        var data2 = setupPlotData(randomNewData[1]);
+        var data3 = setupPlotData(randomNewData[2]);
+        var data4 = setupPlotData(randomNewData[3]);
 
-      d3.select("#graph2")
-        .text(
-          "Age: " + randomData[1].Age + ", " + 
-          "Gender: " + randomData[1].Gender + ", " +
-          "Sexual Orientation: " + randomData[1].Sexual_Identity
-        );
+        var g1c = d3.select("#graph1Container");
+        var g2c = d3.select("#graph2Container");
+        var g3c = d3.select("#graph3Container");
+        var g4c = d3.select("#graph4Container");
 
-      d3.select("#graph3")
-        .text(
-          "Age: " + randomData[2].Age + ", " + 
-          "Gender: " + randomData[2].Gender + ", " +
-          "Sexual Orientation: " + randomData[2].Sexual_Identity
-        );
-
-      d3.select("#graph4")
-        .text(
-          "Age: " + randomData[3].Age + ", " + 
-          "Gender: " + randomData[3].Gender + ", " +
-          "Sexual Orientation: " + randomData[3].Sexual_Identity
-        ); */
-        data1 = setupPlotData(randomNewData[0]);
-        data2 = setupPlotData(randomNewData[1]);
-        data3 = setupPlotData(randomNewData[2]);
-        data4 = setupPlotData(randomNewData[3]);
-
-        if (data1 != []) {
+        if (data1.length > 0) {
           Plotly.react("graph1", data1, plotLayout, plotAddlParams);
-        } else {}
-        if (data2 != []) {
+        } else {
+          console.log("data1 missing");
+          g1c.attr("style", "display: none;");
+        }
+        if (data2.length > 0) {
+          g2c.attr("style", "display: inline-block;");
           Plotly.react("graph2", data2, plotLayout, plotAddlParams);
-        } else {}
-        if (data3 != []) {
+        } else {
+          console.log("data2 missing");
+          g2c.attr("style", "display: none;");
+        }
+        if (data3.length > 0) {
+          g3c.attr("style", "display:inline-block;");
           Plotly.react("graph3", data3, plotLayout, plotAddlParams);
-        } else {}
-        if (data4 != []) {
+        } else {
+          console.log("data3 missing");
+          g3c.attr("style", "display: none;");
+        }
+        if (data4.length > 0) {
+          console.log(g4c.attr("style"), "-- style4");
+          g4c.attr("style", "display: inline-block;");
           Plotly.react("graph4", data4, plotLayout, plotAddlParams);
-        } else {}
+        } else {
+          console.log(data4, "data4 missing");
+          g4c.attr("style", "display: none;");
+        }
 
       }
 
@@ -318,6 +283,7 @@
     .catch(function(error) {
       console.log(error, ": could not load csv");
     });
+
 
     function randomEntries(d) {
       var n = d.length;
@@ -336,23 +302,11 @@
       return values;
     }
 
+
     function setupPlotData(d) {
-        console.log(d, "-- dsetup");
-        if (d != null) {
-          radii = [d.ADPSWORK, d.ADPSRELS, d.ADPSSOC, d.ADPSHMGT, d.ADPSWORK];
-          console.log(radii, "-- rsetup");
-          return [{
-          type: 'scatterpolar',
-          r: radii,
-          theta: ['Work', 'Relationships', 'Social', 'Home Management', 'Work'],
-          fill: 'toself',
-               fillcolor: 'rgba(255, 255, 191, .50)',
-               line: {color: 'rgba(255, 5, 191, .50)', shape: "spline", smoothing: 1.3},
-               marker: {color: 'rgba(25, 5, 191, .50)' }
-          }]
-        } else {
-          return [];
-        }
+      console.log(d, "-- dsetup");
+      if (d != null) {
+        radii = [d.ADPSWORK, d.ADPSRELS, d.ADPSSOC, d.ADPSHMGT, d.ADPSWORK];
         console.log(radii, "-- rsetup");
         return [{
         type: 'scatterpolar',
@@ -363,13 +317,16 @@
              line: {color: 'rgba(255, 5, 191, .50)', shape: "spline", smoothing: 1.3},
              marker: {color: 'rgba(25, 5, 191, .50)' }
         }]
+      } else {
+        return [];
       }
+    }
 
     function updatePlotData(d) {
       // console.log(d, "-- d");
       if (d != null) {
         radii = [d.ADPSWORK, d.ADPSRELS, d.ADPSSOC, d.ADPSHMGT, d.ADPSWORK];
-        return { r: radii};
+        return { r: radii };
       }
       return { r: [] };
       // console.log(radii, "-- r");
