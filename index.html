@@ -88,7 +88,7 @@
             <td id="graph4Container" class="graph"><div id="graph4"></div><div class="graphText">Placeholder Text</div></td>
           </tr>
         </table>
-        <div id="legend" class="graph"></div>
+        <div id="legend" class="graph"></div> <!-- should probably generalize the name of the graph class so that this makes sense, or use another class to style it -->
       </div>
     </div>
   </body>
@@ -104,23 +104,23 @@
 
     var legendWidth = "20%";
 
-    var fakeData = [
-      {"age":"24-25", "sex": "Male", "orientation": "Homosexual", "income": "$50,000-$74,999", "marital_status": "Married"},
-      {"age":"65+", "sex": "Female", "orientation": "Bisexual", "income": "$30,000-$39,999", "marital_status": "Widowed"},
-      {"age":"18", "sex": "Female", "orientation": "Heterosexual", "income": "Less than $10,000 (including loss)", "marital_status": "Never Been Married"},
+    /* var fakeData = [
+      {"age":"24-25", "sex": "Male", "orientation": "Gay or Lesbian", "income": "$50,000-$74,999", "marital_status": "Married"},
+      {"age":"65+", "sex": "Female", "orientation": "Bi/Pansexual", "income": "$30,000- $39,999", "marital_status": "Widowed"},
+      {"age":"18", "sex": "Female", "orientation": "Heterosexual", "income": "Less than $10,000 (Including Loss)", "marital_status": "Never Been Married"},
       {"age":"40-44", "sex": "Male", "orientation": "Heterosexual", "income": "$75,000 or more", "marital_status": "Never Been Married"},
       {"age":"50-64", "sex": "Female", "orientation": "Homosexual", "income": "$75,000 or more", "marital_status": "Divorced or Separated"},
-    ];
+    ]; */
 
-    /* var randomData = randomEntries(data); */
+    /* var randomData = randomEntries(fakeData); */
 
     // for headers & drop down values
     var key = {
       "Age": ["18", "19", "20", "21", "23-22", "24-25", "26-29", "30-34", "35-39", "40-44", "45-49", "50-64", "65+"],
       "Gender": ["Male", "Female"],
-      "Sexual_Identity": ["Heterosexual", "Homosexual", "Bisexual"],
-      "Total_Family_Income": ["Less than $10,000 (including loss)", "$10,000 - $19,999", "$20,000 - $29,999", "$30,000 - $39,999", "$40,000 - $49,999", "$50,000 - $74,999", "$75,000 or more"]
-    }
+      "Sexual_Identity": ["Heterosexual", "Lesbian or Gay", "Bisexual"],
+      "Total_Family_Income": ["Less than $10,000 (Including Loss)", "$10,000 - $19,999", "$20,000 - $29,999", "$30,000 - $39,999", "$40,000 - $49,999", "$50,000 - $74,999", "$75,000 or more"]
+    };
 
     var plotLayout = {
         polar: {
@@ -132,7 +132,13 @@
         width: graphWidth,
         height: graphHeight,
         showlegend: false
-      }
+      };
+
+    var plotAddlParams = {
+      showSendToCloud: false, 
+      displayModeBar: false, 
+      staticPlot: true
+    };
 
     // for using csv
     d3.csv('data/a3_df_inverted.csv')
@@ -184,21 +190,22 @@
 
       var graphs = d3.select("#graphs")
         .attr("width", "80%")
-        .attr("style", "display: inline-block; position: relative; float: left;");
+        .attr("style", "display: inline-block; position: relative;");
 
       var legend = d3.select("#legend")
         .attr("width", legendWidth)
-        .attr("height", 2*graphHeight);
+        .attr("height", chartHeight)
+        .attr("style", "display: inline-block; position: relative; top: 0;");
 
       data1 = setupPlotData(randomData[0]);
       data2 = setupPlotData(randomData[1]);
       data3 = setupPlotData(randomData[2]);
       data4 = setupPlotData(randomData[3]);
 
-      Plotly.plot("graph1", data1, plotLayout, {showSendToCloud: false, displayModeBar: false, staticPlot: true});
-      Plotly.plot("graph2", data2, plotLayout, {showSendToCloud: false, displayModeBar: false, staticPlot: true});
-      Plotly.plot("graph3", data3, plotLayout, {showSendToCloud: false, displayModeBar: false, staticPlot: true});
-      Plotly.plot("graph4", data4, plotLayout, {showSendToCloud: false, displayModeBar: false, staticPlot: true});
+      Plotly.plot("graph1", data1, plotLayout, plotAddlParams);
+      Plotly.plot("graph2", data2, plotLayout, plotAddlParams);
+      Plotly.plot("graph3", data3, plotLayout, plotAddlParams);
+      Plotly.plot("graph4", data4, plotLayout, plotAddlParams);
 
       // temporary for the text. will be replaced with plotly calls, actually
       /* d3.select("#graph1")
@@ -287,17 +294,23 @@
           "Gender: " + randomData[3].Gender + ", " +
           "Sexual Orientation: " + randomData[3].Sexual_Identity
         ); */
-      data1 = updatePlotData(randomNewData[0]);
-      data2 = updatePlotData(randomNewData[1]);
-      data3 = updatePlotData(randomNewData[2]);
-      data4 = updatePlotData(randomNewData[3]);
+        data1 = setupPlotData(randomNewData[0]);
+        data2 = setupPlotData(randomNewData[1]);
+        data3 = setupPlotData(randomNewData[2]);
+        data4 = setupPlotData(randomNewData[3]);
 
-      console.log(data1);
-
-      Plotly.restyle("graph1", data1);
-      Plotly.restyle("graph2", data2);
-      Plotly.restyle("graph3", data3);
-      Plotly.restyle("graph4", data4);
+        if (data1 != []) {
+          Plotly.react("graph1", data1, plotLayout, plotAddlParams);
+        } else {}
+        if (data2 != []) {
+          Plotly.react("graph2", data2, plotLayout, plotAddlParams);
+        } else {}
+        if (data3 != []) {
+          Plotly.react("graph3", data3, plotLayout, plotAddlParams);
+        } else {}
+        if (data4 != []) {
+          Plotly.react("graph4", data4, plotLayout, plotAddlParams);
+        } else {}
 
       }
 
@@ -324,24 +337,43 @@
     }
 
     function setupPlotData(d) {
-        r = [d.ADPSWORK, d.ADPSRELS, d.ADPSSOC, d.ADPSHMGT, d.ADPSWORK];
+        console.log(d, "-- dsetup");
+        if (d != null) {
+          radii = [d.ADPSWORK, d.ADPSRELS, d.ADPSSOC, d.ADPSHMGT, d.ADPSWORK];
+          console.log(radii, "-- rsetup");
+          return [{
+          type: 'scatterpolar',
+          r: radii,
+          theta: ['Work', 'Relationships', 'Social', 'Home Management', 'Work'],
+          fill: 'toself',
+               fillcolor: 'rgba(255, 255, 191, .50)',
+               line: {color: 'rgba(255, 5, 191, .50)', shape: "spline", smoothing: 1.3},
+               marker: {color: 'rgba(25, 5, 191, .50)' }
+          }]
+        } else {
+          return [];
+        }
+        console.log(radii, "-- rsetup");
         return [{
         type: 'scatterpolar',
-        r: r,
-        theta: ['Work','Relationships','Social', 'Home Management', 'Work'],
+        r: radii,
+        theta: ['Work', 'Relationships', 'Social', 'Home Management', 'Work'],
         fill: 'toself',
-             fillcolor: 'rgba(255,255,191,.50)',
-             line: {color:'rgba(255,5,191,.50)', shape: "spline", smoothing:1.3},
-             marker: {color:'rgba(25,5,191,.50)' }
-
+             fillcolor: 'rgba(255, 255, 191, .50)',
+             line: {color: 'rgba(255, 5, 191, .50)', shape: "spline", smoothing: 1.3},
+             marker: {color: 'rgba(25, 5, 191, .50)' }
         }]
       }
 
     function updatePlotData(d) {
-      console.log(d, "-- d");
-      r = [d.ADPSWORK, d.ADPSRELS, d.ADPSSOC, d.ADPSHMGT, d.ADPSWORK];
-      console.log(r, "-- r");
-      return { r: r };
+      // console.log(d, "-- d");
+      if (d != null) {
+        radii = [d.ADPSWORK, d.ADPSRELS, d.ADPSSOC, d.ADPSHMGT, d.ADPSWORK];
+        return { r: radii};
+      }
+      return { r: [] };
+      // console.log(radii, "-- r");
+      
     }
 
   </script>
