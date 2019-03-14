@@ -130,6 +130,8 @@
           <tr> 
             <td id="graph1Container" class="graph"><div id="graph1"></div><div class="graphText">Placeholder Text</div></td>
             <td id="graph2Container" class="graph"><div id="graph2"></div><div class="graphText">Placeholder Text</div></td>
+          </tr>
+          <tr>
             <td id="graph3Container" class="graph"><div id="graph3"></div><div class="graphText">Placeholder Text</div></td>
             <td id="graph4Container" class="graph"><div id="graph4"></div><div class="graphText">Placeholder Text</div></td>
           </tr>
@@ -144,8 +146,8 @@
     var chartHeight = "20vh";
     var chartWidth = "20vw";
 
-    var graphHeight = "350";
-    var graphWidth = "350";
+    var graphHeight = "350px";
+    var graphWidth = "350px";
 
     // data values for drop downs & blob coloring
     var key = {
@@ -173,8 +175,8 @@
             range: [0, 5]
           }
         },
-        width: graphWidth,
-        height: graphHeight,
+        width: parseInt(graphWidth),
+        height: parseInt(graphHeight),
         showlegend: false
       };
 
@@ -232,19 +234,23 @@
         .attr("height", chartHeight + chartMargin)
         .attr("style", "display: inline-block;");
 
-      /* var graphs = d3.select("#graphs")
-        .attr("width", "80%")
-        .attr("style", "display: inline-block; position: relative;"); */
-
       data1 = setupPlotData(randomData[0]);
       data2 = setupPlotData(randomData[1]);
       data3 = setupPlotData(randomData[2]);
       data4 = setupPlotData(randomData[3]);
 
-      Plotly.plot("graph1", data1, plotLayout, plotAddlParams);
-      Plotly.plot("graph2", data2, plotLayout, plotAddlParams);
-      Plotly.plot("graph3", data3, plotLayout, plotAddlParams);
-      Plotly.plot("graph4", data4, plotLayout, plotAddlParams);
+      if (data1.length > 0) {
+        Plotly.plot("graph1", data1, plotLayout, plotAddlParams);
+      }
+      if (data2.length > 0) {
+        Plotly.plot("graph2", data2, plotLayout, plotAddlParams);
+      }
+      if (data3.length > 0) {
+        Plotly.plot("graph3", data3, plotLayout, plotAddlParams);
+      }
+      if (data4.length > 0) {
+        Plotly.plot("graph4", data4, plotLayout, plotAddlParams);
+      }
 
 
       function update() {
@@ -257,6 +263,8 @@
           });
 
         var randomNewData;
+
+        // filter dataset for entries that match the dropdown selections
         if (d3.keys(choices).length > 0) {
           var newData = data.filter(function(d,i) {
             var valid = true;
@@ -282,37 +290,38 @@
         var data3 = setupPlotData(randomNewData[2]);
         var data4 = setupPlotData(randomNewData[3]);
 
-        console.log(randomNewData, "data");
-        console.log(randomNewData[5], "out of scope call");
-
         var g1c = d3.select("#graph1Container");
         var g2c = d3.select("#graph2Container");
         var g3c = d3.select("#graph3Container");
         var g4c = d3.select("#graph4Container");
 
         if (data1.length > 0) {
+          g2c.attr("style", "display: block;")
+            .attr("width", graphWidth);
           Plotly.react("graph1", data1, plotLayout, plotAddlParams);
         } else {
-          console.log("data1 missing");
+          console.log("data1 missing"); // TODO: If this is the case, we should display a message
           g1c.attr("style", "display: none;");
         }
         if (data2.length > 0) {
-          g2c.attr("style", "display: block;");
+          g2c.attr("style", "display: block;")
+            .attr("width", graphWidth);
           Plotly.react("graph2", data2, plotLayout, plotAddlParams);
         } else {
           console.log("data2 missing");
           g2c.attr("style", "display: none;");
         }
         if (data3.length > 0) {
-          g3c.attr("style", "display:inline-block;");
+          g3c.attr("style", "display: block;")
+            .attr("width", graphWidth);
           Plotly.react("graph3", data3, plotLayout, plotAddlParams);
         } else {
           console.log("data3 missing");
           g3c.attr("style", "display: none;");
         }
         if (data4.length > 0) {
-          console.log(g4c.attr("style"), "-- style4");
-          g4c.attr("style", "display: inline-block;");
+          g4c.attr("style", "display: block;")
+            .attr("width", graphWidth);
           Plotly.react("graph4", data4, plotLayout, plotAddlParams);
         } else {
           console.log(data4, "data4 missing");
@@ -327,6 +336,7 @@
     });
 
 
+    // Get 4 random entries from the provided data
     function randomEntries(d) {
       var n = d.length;
       var dCopy = Object.assign([], d);
@@ -358,37 +368,40 @@
       return colorKey[d.Days_Lost];
     }
 
+    // Check if data passed in is valid to use
     function validatedValues(d) {
-      console.log(d, "called");
       var data = d[0];
-      if (parseInt(data.ADPSWORK) > 10 || parseInt(data.ADPSWORK) < 0) {
-        return [{}];
-      } else if (parseInt(data.ADPSRELS) > 10 || parseInt(data.ADPSRELS) < 0) {
-        return [{}];
-      } else if (parseInt(data.ADPSSOC) > 10 || parseInt(data.ADPSSOC) < 0) {
-        return [{}];
-      } else if (parseInt(data.ADPSHMGT) > 10 || parseInt(data.ADPSHMGT) < 0) {
-        return [{}];
-      } else if (parseInt(data.ADPSWORK) > 10 || parseInt(data.ADPSWORK) < 0) {
-        return [{}];
-      } else if (!key.Days_Lost.includes(data.Days_Lost)) {
-        return [{}];
-      } else if (!key.Age.includes(data.Age)) {
-        return [{}];
-      } else if (!key.Gender.includes(data.Gender)) {
-        return [{}];
-      } else if (!key.Sexual_Identity.includes(data.Sexual_Identity)) {
-        return [{}];
-      } else if (!key.Total_Family_Income.includes(data.Total_Family_Income)) {
-        return [{}];
-      }
-      console.log("success?");
-      return d;
+      if (Object.keys(data).length > 0) {
+        if (parseInt(data.ADPSWORK) > 10 || parseInt(data.ADPSWORK) < 0) {
+          return [];
+        } else if (parseInt(data.ADPSRELS) > 10 || parseInt(data.ADPSRELS) < 0) {
+          return [];
+        } else if (parseInt(data.ADPSSOC) > 10 || parseInt(data.ADPSSOC) < 0) {
+          return [];
+        } else if (parseInt(data.ADPSHMGT) > 10 || parseInt(data.ADPSHMGT) < 0) {
+          return [];
+        } else if (parseInt(data.ADPSWORK) > 10 || parseInt(data.ADPSWORK) < 0) {
+          return [];
+        } else if (!key.Days_Lost.includes(data.Days_Lost)) {
+          return [];
+        } else if (!key.Age.includes(data.Age)) {
+          return [];
+        } else if (!key.Gender.includes(data.Gender)) {
+          return [];
+        } else if (!key.Sexual_Identity.includes(data.Sexual_Identity)) {
+          return [];
+        } else if (!key.Total_Family_Income.includes(data.Total_Family_Income)) {
+          return [];
+        }
+        return d;
+      } else {
+        return [];
+      }  
     }
 
     function setupPlotData(d) {
       console.log(d, "-- dsetup");
-      if (d != null) {
+      if (d != null && typeof d != "undefined" && Object.keys(d).length > 0) {
         work = d.ADPSWORK == 0 ? 1 : Math.ceil(parseInt(d.ADPSWORK)/2);
         rels = d.ADPSRELS == 0 ? 1 : Math.ceil(parseInt(d.ADPSRELS)/2);
         social = d.ADPSSOC == 0 ? 1 : Math.ceil(parseInt(d.ADPSSOC)/2);
