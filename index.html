@@ -33,13 +33,13 @@
       }
 
       h2 {
-        color: gray;
-        font-family: 'Montserrat', sans-serif; 
+        color: black;
+        font-family: 'Montserrat', sans-serif;
         margin: 24px; 
       }
       
       h3 {
-        color: gray;
+        color: black;
         font-family: 'Montserrat', sans-serif;
         margin: 24px; 
       }
@@ -90,17 +90,28 @@
         width: 50%;/* 20vw; */
         height: 50%;/* 20vh; */
       }
+      #content {
+  float: left ;
+  width: 40% ;
+}
+#navbar {
+  float: right;
+  width: 60%;
+}
+      .border-right {
+    border-right: 1px solid black;
+}
 
     </style>
   </head>
 
   <body>
     <div id="main-wrapper">
-      <div id="left">
-        <h2>Different days in the life</h1> 
+      <div id="container">
+        <div id="content"><h2>Different days in the life</h1>
         <h3>What is it like to struggle with depression?</h2>
         <p> Find individual stories for... <p/>
-        
+
         <div id="filters">
           <select id="Age" class="filterOption"></select>
           <span>year old</span>
@@ -113,22 +124,25 @@
         </div>
         <div></br></br></br></div>
         <div>
-          <img src="images/a3 legend-08.png" alt="legend" id="legend"> 
-        </div>
-      </div>
-
-      <div id="graphsContainer">
+          <img src="images/a3 legend-08.png" alt="legend" id="legend">
+        </div><p>What does depression look like? What does it mean to be depressed? People often confuse sadness, the emotion, with depression. As a result, if someone is suffering from depression, others quite often write it off as a temporary emotion not realizing that depression is much more than that. It can be extremely debilitating and serious. Often, the lack of information results in a lack of support and empathy for someone with the very real effects of depression.
+<br>A circle that consumes the entire plot represents having no interference from depression in life activities--a full domain of ability. As the effects of depression increase in each aspect, the area of the circle shrinks and deforms, showing the shrunken domain of one’s ability to perform tasks in each category.
+</p></div>
+        <div id="navbar"><div id="graphsContainer">
         <table id="graphs">
-          <tr> 
-            <td id="graph1Container" class="graph"><div id="graph1"></div><div class="graphText">Placeholder Text</div></td>
-            <td id="graph2Container" class="graph"><div id="graph2"></div><div class="graphText">Placeholder Text</div></td>
+          <tr>
+            <td id="graph1Container" class="graph"><div id="graph1"></div><div class="graphText">Story # <br> Age: "Age" <br> Gender <br> Sexual Identity <br> Total Family Income <br> Days Lost </div></td>
+            <td id="graph2Container" class="graph"><div id="graph2"></div><div class="graphText">Story # <br> Age: "Age" <br> Gender <br> Sexual Identity <br> Total Family Income <br> Days Lost</div></td>
           </tr>
           <tr>
-            <td id="graph3Container" class="graph"><div id="graph3"></div><div class="graphText">Placeholder Text</div></td>
-            <td id="graph4Container" class="graph"><div id="graph4"></div><div class="graphText">Placeholder Text</div></td>
+            <td id="graph3Container" class="graph"><div id="graph3"></div><div class="graphText">Story # <br> Age: "Age" <br> Gender <br> Sexual Identity <br> Total Family Income <br> Days Lost</div></td>
+            <td id="graph4Container" class="graph"><div id="graph4"></div><div class="graphText">Story # <br> Age: "Age" <br> Gender <br> Sexual Identity <br> Total Family Income <br> Days Lost</div></td>
           </tr>
         </table>
+      </div></div>
       </div>
+
+
     </div>
   </body>
 
@@ -152,11 +166,11 @@
 
     // for blob coloring
     var colorKey = {
-      "0": {"fill": "rgba(0,255,230,0.5)", "line": "rgba(0,255,230,1)"}, 
-      "<10 days": {"fill": "rgba(30,196,196,0.5)", "line": "rgba(30,196,196,1)"}, 
-      "10-30 days": {"fill": "rgba(51,140,140,0.5)", "line": "rgba(51,140,140,1)"}, 
-      "31-90 days": {"fill": "rgba(99,137,137,0.5)", "line": "rgba(99,137,137,1)"}, 
-      "91-180 days": {"fill": "rgba(69,79,79,0.5)", "line": "rgba(69,79,79,1)"}, 
+      "0": {"fill": "rgba(0,255,230,0.5)", "line": "rgba(0,255,230,1)"},
+      "<10 days": {"fill": "rgba(30,196,196,0.5)", "line": "rgba(30,196,196,1)"},
+      "10-30 days": {"fill": "rgba(51,140,140,0.5)", "line": "rgba(51,140,140,1)"},
+      "31-90 days": {"fill": "rgba(99,137,137,0.5)", "line": "rgba(99,137,137,1)"},
+      "91-180 days": {"fill": "rgba(69,79,79,0.5)", "line": "rgba(69,79,79,1)"},
       ">180 days": {"fill": "rgba(17,17,17,0.5)", "line": "rgba(17,17,17,1)"}
     }
 
@@ -190,8 +204,8 @@
       };
 
     var plotAddlParams = {
-      showSendToCloud: false, 
-      displayModeBar: false, 
+      showSendToCloud: false,
+      displayModeBar: false,
       staticPlot: false,
     };
 
@@ -202,7 +216,7 @@
 
       var selectRow = d3.select("#filters")
       // .attr("style", "display: inline-block;");
-    
+
       var selectAge = selectRow.select("#Age")
         .on("change", update);
       var selectGender = selectRow.select("#Gender")
@@ -253,7 +267,7 @@
       if (data1.length > 0) {
         Plotly.plot("graph1", data1, plotLayout, plotAddlParams);
       } else {
-        d3.select("#graphsContainer") 
+        d3.select("#graphsContainer")
         .text("Even though no respondent to this survey fit these criteria, that doesn't mean there isn't someone out there.");
       }
       Plotly.plot("graph2", data2, plotLayout, plotAddlParams);
@@ -266,9 +280,9 @@
         })
         .data(randomData)
         .enter()
-        .text(function(d) { 
+        .text(function(d) {
           console.log("working on graph text");
-          return d; 
+          return d;
         });
 
       function update() {
@@ -377,7 +391,7 @@
         }
 
         n -= 1;
-        
+
         if (n == 0) {
           break;
         }
