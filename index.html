@@ -8,17 +8,23 @@
   	<style>
       #main-wrapper {
         width: 1200px;
-        height: 800px;
+        height: 900px;
       }
 
       #left {
         width: 35%;
         height: inherit;
         display: inline-block;
+        border-width: 0 2px 0 0;
+        border-right-color: gray;
+        border-style: solid;
       }
 
       #graphsContainer {
-        width: 65%;
+        position: relative;
+        float: right;
+        /* margin-top: 100px; */
+        width: 64%;
         display: inline-block;
         color: gray;
         font-family: 'Montserrat', sans-serif;
@@ -85,10 +91,14 @@
       .graph {
         border-radius: 3px;
         padding: 4px;
-        margin: 8;
+        margin: 8px;
         /* background-color: #ffffff; */
         width: 50%;/* 20vw; */
         height: 50%;/* 20vh; */
+      }
+
+      tr {
+        height: 400px;
       }
 
     </style>
@@ -97,9 +107,9 @@
   <body>
     <div id="main-wrapper">
       <div id="left">
-        <h2>Different days in the life</h1> 
+        <h2>A Day In The Life</h1> 
         <h3>What is it like to struggle with depression?</h2>
-        <p> Find individual stories for... <p/>
+        <p> Find different individual stories for... <p/>
         
         <div id="filters">
           <select id="Age" class="filterOption"></select>
@@ -118,14 +128,15 @@
       </div>
 
       <div id="graphsContainer">
+        <div id="emptyDataText"></div>
         <table id="graphs">
           <tr> 
-            <td id="graph1Container" class="graph"><div id="graph1"></div><div class="graphText">Placeholder Text</div></td>
-            <td id="graph2Container" class="graph"><div id="graph2"></div><div class="graphText">Placeholder Text</div></td>
+            <td id="graph1Container" class="graph"><div id="graph1"></div><div id="graphText1">Placeholder Text</div></td>
+            <td id="graph2Container" class="graph"><div id="graph2"></div><div id="graphText2">Placeholder Text</div></td>
           </tr>
-          <tr>
-            <td id="graph3Container" class="graph"><div id="graph3"></div><div class="graphText">Placeholder Text</div></td>
-            <td id="graph4Container" class="graph"><div id="graph4"></div><div class="graphText">Placeholder Text</div></td>
+          <tr class="bottomRow">
+            <td id="graph3Container" class="graph"><div id="graph3"></div><div id="graphText3">Placeholder Text</div></td>
+            <td id="graph4Container" class="graph"><div id="graph4"></div><div id="graphText4">Placeholder Text</div></td>
           </tr>
         </table>
       </div>
@@ -133,6 +144,10 @@
   </body>
 
   <script type="text/javascript">
+
+    var mainWidth = "1200px";
+    var mainHeight = "900px";
+    var emptyTextHeight = "700px";
 
     var chartMargin = "8px";
     var chartHeight = "20vh";
@@ -165,16 +180,17 @@
           radialaxis: {
             visible: true,
             range: [0, 5], tickmode:"array",
-        tickvals:[1,2,3,4,5],
-              tickfont:{color:'rgba(10,10,10,.650)'},
-        dtick:1,
-              ticklen:5,
-              tickcolor: 'rgba(10,10,10,.40)',
-        linecolor: 'rgba(0,0,00,0.15)',
-        showgrid: true,
-        gridcolor: 'rgba(0,0,0,0.1)',
-        layer: "belowtraces",
-        hoverinfo:"all"
+            tickvals:[1,2,3,4,5],
+            tickfont:{color:'rgba(10,10,10,.650)'},
+            dtick:1,
+            ticklen:5,
+            tickcolor: 'rgba(10,10,10,.40)',
+            linecolor: 'rgba(0,0,00,0.15)',
+            showgrid: true,
+            gridcolor: 'rgba(0,0,0,0.1)',
+            layer: "belowtraces",
+            hovermode: false,
+            hoverinfo: "none"
           }
         },
         xaxis: {
@@ -192,16 +208,15 @@
     var plotAddlParams = {
       showSendToCloud: false, 
       displayModeBar: false, 
-      staticPlot: false,
+      staticPlot: true,
     };
 
-    // for using csv
+    // Grab the CSV and do stuff with it
     d3.csv('data/a3_df_inverted_days_final.csv')
     .then(function(data) {
       var randomData = randomEntries(data);
 
       var selectRow = d3.select("#filters")
-      // .attr("style", "display: inline-block;");
     
       var selectAge = selectRow.select("#Age")
         .on("change", update);
@@ -238,39 +253,54 @@
         .append("option")
         .text(function(d) {return d;});
 
-      /* var graphsContainer = d3.select("#graphsContainer")
-        .attr("width", chartWidth + chartMargin)
-        .attr("height", chartHeight + chartMargin)
-        .attr("style", "display: inline-block;");*/ //position: relative; top: -50px;");
+      var g1c = d3.select("#graph1Container");
+      var g2c = d3.select("#graph2Container");
+      var g3c = d3.select("#graph3Container");
+      var g4c = d3.select("#graph4Container");
 
       var data1 = setupPlotData(randomData[0]);
       var data2 = setupPlotData(randomData[1]);
       var data3 = setupPlotData(randomData[2]);
       var data4 = setupPlotData(randomData[3]);
 
-      console.log(data1);
-
       if (data1.length > 0) {
         Plotly.plot("graph1", data1, plotLayout, plotAddlParams);
+        d3.select("#graphText1")
+          .attr("style", "position: relative; top: -40px;")
+          .html(makeGraphText(randomData[0]));
       } else {
-        d3.select("#graphsContainer") 
-        .text("Even though no respondent to this survey fit these criteria, that doesn't mean there isn't someone out there.");
+        g1c.attr("style", "display: none;");
+        d3.select("#emptyDataText")
+          .attr("height", "100%")
+          .html("Even though no respondent to this survey fit these criteria,<br> that doesn't mean there isn't someone out there.")
+          .attr("style", "text-align: center;");
       }
-      Plotly.plot("graph2", data2, plotLayout, plotAddlParams);
-      Plotly.plot("graph3", data3, plotLayout, plotAddlParams);
-      Plotly.plot("graph4", data4, plotLayout, plotAddlParams);
+      if (data2.length > 0) {
+        Plotly.plot("graph2", data2, plotLayout, plotAddlParams);
+        d3.select("#graphText2")
+          .attr("style", "position: relative; top: -40px;")
+          .html(makeGraphText(randomData[1]));
+      } else {
+        g2c.attr("style", "display: none;");
+      }
+      if (data3.length > 0) {
+        Plotly.plot("graph3", data3, plotLayout, plotAddlParams);
+        d3.select("#graphText3")
+          .attr("style", "position: relative; top: -40px;")
+          .html(makeGraphText(randomData[2]));
+      } else {
+        g2c.attr("style", "display: none;");
+      }
+      if (data4.length > 0) {
+        Plotly.plot("graph4", data4, plotLayout, plotAddlParams);
+        d3.select("#graphText4")
+          .attr("style", "position: relative; top: -40px;")
+          .html(makeGraphText(randomData[3]));
+      } else {
+        g2c.attr("style", "display: none;");
+      }
 
-      var graphTextBox = d3.select("#graphText1")
-        .text(function() {
-
-        })
-        .data(randomData)
-        .enter()
-        .text(function(d) { 
-          console.log("working on graph text");
-          return d; 
-        });
-
+      // Called whenever a new choice is selected
       function update() {
         var choices = {};
         d3.selectAll(".filterOption")
@@ -282,7 +312,7 @@
 
         var randomNewData;
 
-        // filter dataset for entries that match the dropdown selections
+        // Filter dataset for entries that match the dropdown selections
         if (d3.keys(choices).length > 0) {
           var newData = data.filter(function(d,i) {
             var valid = true;
@@ -306,22 +336,29 @@
         var data3 = setupPlotData(randomNewData[2]);
         var data4 = setupPlotData(randomNewData[3]);
 
-        var g1c = d3.select("#graph1Container");
-        var g2c = d3.select("#graph2Container");
-        var g3c = d3.select("#graph3Container");
-        var g4c = d3.select("#graph4Container");
-
         if (data1.length > 0) {
-          g2c.attr("style", "display: table-cell;")
+          g1c.attr("style", "display: table-cell;")
           Plotly.react("graph1", data1, plotLayout, plotAddlParams);
+          d3.select("#graphText1")
+            .attr("style", "position: relative; top: -40px;")
+            .html(makeGraphText(randomNewData[0]));
+          d3.select("#emptyDataText")
+            .attr("height", "0")
+            .html(null);
         } else {
           console.log("data1 missing");
           g1c.attr("style", "display: none;")
-          d3.select("#graphsContainer").text( "Even though no respondent to this survey fit these criteria, that doesn't mean there isn't someone out there.");
+          d3.select("#emptyDataText")
+            .attr("height", "100%")
+            .html("Even though no respondent to this survey fit these criteria,<br> that doesn't mean there isn't someone out there.")
+            .attr("style", "text-align: center; line-height: " + emptyTextHeight + ";");
         }
         if (data2.length > 0) {
-          g2c.attr("style", "display: table-cell;")
+          g2c.attr("style", "display: table-cell;");
           Plotly.react("graph2", data2, plotLayout, plotAddlParams);
+          d3.select("#graphText2")
+            .attr("style", "position: relative; top: -40px;")
+            .html(makeGraphText(randomNewData[1]));
         } else {
           console.log("data2 missing");
           g2c.attr("style", "display: none;");
@@ -329,6 +366,9 @@
         if (data3.length > 0) {
           g3c.attr("style", "display: table-cell;")
           Plotly.react("graph3", data3, plotLayout, plotAddlParams);
+          d3.select("#graphText3")
+            .attr("style", "position: relative; top: -40px;")
+            .html(makeGraphText(randomNewData[2]));
         } else {
           console.log("data3 missing");
           g3c.attr("style", "display: none;");
@@ -336,28 +376,32 @@
         if (data4.length > 0) {
           g4c.attr("style", "display: table-cell;")
           Plotly.react("graph4", data4, plotLayout, plotAddlParams);
+          d3.select("#graphText4")
+            .attr("style", "position: relative; top: -40px;")
+            .html(makeGraphText(randomNewData[3]));
         } else {
           console.log(data4, "data4 missing");
           g4c.attr("style", "display: none;");
         }
       }
 
-      // For hovering over graph interaction
-      function hover(data) {
-        var infotext = data.points.map(function(d) {
-          return (d.data.name+': x= '+d.x+', y= '+d.y.toPrecision(3));
-        });
-      }
-
-
-      function unhover(data) {
-        hoverInfo.innerHTML = '';
+      function makeGraphText(d) {
+        console.log(d, "working on graph text");
+        var divStyle = "'text-align: center;'";
+        var startTag = "<div style=" + divStyle + ">";
+        var age = "Age: " + d.Age + "<br>";
+        var gender = "Gender: " + d.Gender + "<br>";
+        var orientation = "Sexual Identity: " + d.Sexual_Identity + "<br>";
+        var income = "Family Income: " + d.Total_Family_Income + "<br>";
+        var daysMissed = "Days Missed: " + d.ADPSDAYS + "<br>";
+        var endTag = "</div>";
+        console.log(startTag + age + gender + orientation + income + daysMissed + endTag);
+        return startTag + age + gender + orientation + income + daysMissed + endTag; 
       }
     })
     .catch(function(error) {
       console.log(error, ": could not load csv");
     });
-
 
 
     // Get 4 random entries from the provided data
@@ -366,20 +410,22 @@
       var dCopy = Object.assign([], d);
 
       values = [];
-      for (i = 0; i < 4; i++) {
-        idx = d3.randomUniform(n)();
-        newValues = dCopy.splice(idx, 1);
-        validated = validatedValues(newValues);
-        if (validated.length > 0) {
-          values = values.concat(validated);
-        } else {
-          i -= 1;
-        }
+      if (dCopy.length > 0) {
+        for (i = 0; i < 4; i++) {
+          idx = d3.randomUniform(n)();
+          newValues = dCopy.splice(idx, 1);
+          validated = validatedValues(newValues);
+          if (validated.length > 0) {
+            values = values.concat(validated);
+          } else {
+            i -= 1;
+          }
 
-        n -= 1;
-        
-        if (n == 0) {
-          break;
+          n -= 1;
+          
+          if (n == 0) {
+            break;
+          }
         }
       }
 
@@ -393,8 +439,7 @@
     // Check if data passed in is valid to use
     function validatedValues(d) {
       var data = d[0];
-      console.log(data.Work_Int_Inv);
-      if (data != null && typeof data != "undefined") { // != "undefined") {
+      if (data != null && typeof data != "undefined") {
         if (Object.keys(data).length > 0) {
           if (parseInt(data.Work_Int_Inv) > 10 || parseInt(data.Work_Int_Inv) < 0) {
             return [];
@@ -427,18 +472,15 @@
     }
 
     function setupPlotData(d) {
-      console.log(d, "-- dsetup");
       if (d != null && typeof d != "undefined" && Object.keys(d).length > 0) {
         work = d.Work_Int_Inv == 0 ? 1 : Math.ceil(parseInt(d.Work_Int_Inv)/2);
         rels = d.Relationship_Int_Inv == 0 ? 1 : Math.ceil(parseInt(d.Relationship_Int_Inv)/2);
         social = d.Social_Int_Inv == 0 ? 1 : Math.ceil(parseInt(d.Social_Int_Inv)/2);
         house = d.House_Mgmt_Int_Inv == 0 ? 1 : Math.ceil(parseInt(d.House_Mgmt_Int_Inv)/2);
         radii = [work, rels, social, house, work];
-        console.log(radii, "-- rsetup");
         var colors = blobColor(d);
         var fillColor = colors.fill;
         var lineColor = colors.line;
-        var daysLostStr = d.ADPSDAYS + " missed";
         return [{
         type: 'scatterpolar',
         r: radii,
@@ -447,9 +489,6 @@
              fillcolor: fillColor,
              line: {lineColor, shape: "spline", smoothing: 1.3},
              marker: {line: {width:1, color:'rgba(10,10,10,.40)'}, color:'rgba(250,250,250,1)', size: 10 },
-            hovermode: "closest",
-            hoverinfo: "text",
-            name: daysLostStr
         }]
       } else {
         return [];
