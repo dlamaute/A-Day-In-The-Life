@@ -97,10 +97,6 @@
         height: 50%;/* 20vh; */
       }
 
-      tr {
-        height: 400px;
-      }
-
     </style>
   </head>
 
@@ -273,7 +269,7 @@
         d3.select("#emptyDataText")
           .attr("height", "100%")
           .html("Even though no respondent to this survey fit these criteria,<br> that doesn't mean there isn't someone out there.")
-          .attr("style", "text-align: center;");
+          .attr("style", "text-align: center; padding: 50% 0 50% 0;");
       }
       if (data2.length > 0) {
         Plotly.plot("graph2", data2, plotLayout, plotAddlParams);
@@ -344,6 +340,7 @@
             .html(makeGraphText(randomNewData[0]));
           d3.select("#emptyDataText")
             .attr("height", "0")
+            .attr("style", "padding: 0")
             .html(null);
         } else {
           console.log("data1 missing");
@@ -351,7 +348,7 @@
           d3.select("#emptyDataText")
             .attr("height", "100%")
             .html("Even though no respondent to this survey fit these criteria,<br> that doesn't mean there isn't someone out there.")
-            .attr("style", "text-align: center; line-height: " + emptyTextHeight + ";");
+            .attr("style", "text-align: center; padding: 50% 0 50% 0;");
         }
         if (data2.length > 0) {
           g2c.attr("style", "display: table-cell;");
@@ -393,7 +390,7 @@
         var gender = "Gender: " + d.Gender + "<br>";
         var orientation = "Sexual Identity: " + d.Sexual_Identity + "<br>";
         var income = "Family Income: " + d.Total_Family_Income + "<br>";
-        var daysMissed = "Days Missed: " + d.ADPSDAYS + "<br>";
+        var daysMissed = "Days Lost: " + d.ADPSDAYS + "<br>";
         var endTag = "</div>";
         console.log(startTag + age + gender + orientation + income + daysMissed + endTag);
         return startTag + age + gender + orientation + income + daysMissed + endTag; 
