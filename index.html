@@ -26,9 +26,10 @@
         /* margin-top: 100px; */
         width: 64%;
         display: inline-block;
-        color: gray;
+        color: black;
         font-family: 'Montserrat', sans-serif;
-        font-size: 14px;
+        font-size: 12px;
+        padding-left: 120px;
       }
 
       h1 {
@@ -39,29 +40,34 @@
       }
 
       h2 {
-        color: gray;
-        font-family: 'Montserrat', sans-serif; 
-        margin: 24px; 
+        color: cadetblue;
+        font-family: 'Montserrat', sans-serif;
+        margin: 32px;
+        font-size: 5 px;
+        font-weight: 900;
       }
       
       h3 {
-        color: gray;
+        color: black;
         font-family: 'Montserrat', sans-serif;
-        margin: 24px; 
+        margin: 24px;
+        font-size:12 px;
+        font-weight: 100;
       }
       
       p {
         color: gray;
         font-family: 'Montserrat', sans-serif;
-        font-size: 14px;
+        font-size: 12px;
         margin: 8px;
         margin-left: 24px;
       }
-      
+
       span {
         color: gray;
         font-family: 'Montserrat', sans-serif;
-        margin: 2px 2px 2px 0; 
+        margin: 2px 2px 2px 0;
+        font-size: 12px;
       }
 
       #filters{
@@ -80,8 +86,9 @@
         height: 32px;
         background-color: #aeaeae;
         color: white;
-        font-size: 14px;
-        font-family: 'Montserrat'
+        font-size: 12px;
+        font-weight: 100;
+        font-family: 'Montserrat';
       }
 
       #legend {
@@ -106,7 +113,7 @@
         <h2>A Day In The Life</h1> 
         <h3>What is it like to struggle with depression?</h2>
         <p> Find different individual stories for... <p/>
-        
+
         <div id="filters">
           <select id="Age" class="filterOption"></select>
           <span>year old</span>
@@ -121,6 +128,11 @@
         <div>
           <img src="images/a3 legend-08.png" alt="legend" id="legend"> 
         </div>
+        <!-- 
+        <p>
+          What does depression look like? What does it mean to be depressed? People often confuse sadness, the emotion, with depression. As a result, if someone is suffering from depression, others quite often write it off as a temporary emotion, not realizing that depression is much more than that. It can be extremely debilitating and serious. Often, the lack of information results in a lack of support and empathy for someone with the very real effects of depression.<br>A circle that consumes the entire plot represents having no interference from depression in life activities--a full domain of ability. As the effects of depression increase in each aspect, the area of the circle shrinks and deforms, showing the shrunken domain of one’s ability to perform tasks in each category.
+        </p>
+        -->
       </div>
 
       <div id="graphsContainer">
@@ -135,7 +147,10 @@
             <td id="graph4Container" class="graph"><div id="graph4"></div><div id="graphText4">Placeholder Text</div></td>
           </tr>
         </table>
+      </div></div>
       </div>
+
+
     </div>
   </body>
 
@@ -163,11 +178,11 @@
 
     // for blob coloring
     var colorKey = {
-      "0": {"fill": "rgba(0,255,230,0.5)", "line": "rgba(0,255,230,1)"}, 
-      "<10 days": {"fill": "rgba(30,196,196,0.5)", "line": "rgba(30,196,196,1)"}, 
-      "10-30 days": {"fill": "rgba(51,140,140,0.5)", "line": "rgba(51,140,140,1)"}, 
-      "31-90 days": {"fill": "rgba(99,137,137,0.5)", "line": "rgba(99,137,137,1)"}, 
-      "91-180 days": {"fill": "rgba(69,79,79,0.5)", "line": "rgba(69,79,79,1)"}, 
+      "0": {"fill": "rgba(0,255,230,0.5)", "line": "rgba(0,255,230,1)"},
+      "<10 days": {"fill": "rgba(30,196,196,0.5)", "line": "rgba(30,196,196,1)"},
+      "10-30 days": {"fill": "rgba(51,140,140,0.5)", "line": "rgba(51,140,140,1)"},
+      "31-90 days": {"fill": "rgba(99,137,137,0.5)", "line": "rgba(99,137,137,1)"},
+      "91-180 days": {"fill": "rgba(69,79,79,0.5)", "line": "rgba(69,79,79,1)"},
       ">180 days": {"fill": "rgba(17,17,17,0.5)", "line": "rgba(17,17,17,1)"}
     }
 
@@ -213,7 +228,7 @@
       var randomData = randomEntries(data);
 
       var selectRow = d3.select("#filters")
-    
+
       var selectAge = selectRow.select("#Age")
         .on("change", update);
       var selectGender = selectRow.select("#Gender")
