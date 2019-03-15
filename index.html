@@ -23,7 +23,6 @@
       #graphsContainer {
         position: relative;
         float: right;
-        /* margin-top: 100px; */
         width: 63%;
         display: inline-block;
         color: black;
@@ -102,9 +101,8 @@
         border-radius: 3px;
         padding: 4px;
         margin: 8px;
-        /* background-color: #ffffff; */
-        width: 50%;/* 20vw; */
-        height: 50%;/* 20vh; */
+        width: 50%;
+        height: 50%;
       }
 
     </style>
@@ -244,7 +242,6 @@
 
       var valuesAge = ["Any Age"].concat(key.Age);
       valuesAge[5] = "22-23";
-      console.log(key.Age);
       var valuesGender = ["Any Gender"].concat(key.Gender);
       var valuesOrientation = ["Any Sexual Identity"].concat(key.Sexual_Identity);
       var valuesIncome = ["Any Income"].concat(key.Total_Family_Income);
@@ -368,7 +365,6 @@
             .attr("style", "padding: 0")
             .html(null);
         } else {
-          console.log("data1 missing");
           g1c.attr("style", "display: none;")
           d3.select("#emptyDataText")
             .attr("height", "100%")
@@ -382,7 +378,6 @@
             .attr("style", "position: relative; top: -40px;")
             .html(makeGraphText(randomNewData[1]));
         } else {
-          console.log("data2 missing");
           g2c.attr("style", "display: none;");
         }
         if (data3.length > 0) {
@@ -392,7 +387,6 @@
             .attr("style", "position: relative; top: -40px;")
             .html(makeGraphText(randomNewData[2]));
         } else {
-          console.log("data3 missing");
           g3c.attr("style", "display: none;");
         }
         if (data4.length > 0) {
@@ -402,13 +396,11 @@
             .attr("style", "position: relative; top: -40px;")
             .html(makeGraphText(randomNewData[3]));
         } else {
-          console.log(data4, "data4 missing");
           g4c.attr("style", "display: none;");
         }
       }
 
       function makeGraphText(d) {
-        console.log(d, "working on graph text");
         var divStyle = "'text-align: center;'";
         var startTag = "<div style=" + divStyle + ">";
         var ageRange = d.Age == "23-22" ? "22-23" : d.Age;
@@ -418,7 +410,6 @@
         var income = "Family Income: " + d.Total_Family_Income + "<br>";
         var daysMissed = "Days Lost: " + d.ADPSDAYS + "<br>";
         var endTag = "</div>";
-        console.log(startTag + age + gender + orientation + income + daysMissed + endTag);
         return startTag + age + gender + orientation + income + daysMissed + endTag; 
       }
     })
@@ -455,6 +446,7 @@
       return values;
     }
 
+    // Returns the color scheme for an individual data point
     function blobColor(d) {
       return colorKey[d.Days_Lost];
     }
