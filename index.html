@@ -24,12 +24,11 @@
         position: relative;
         float: right;
         /* margin-top: 100px; */
-        width: 64%;
+        width: 63%;
         display: inline-block;
         color: black;
         font-family: 'Montserrat', sans-serif;
         font-size: 12px;
-        padding-left: 120px;
       }
 
       h1 {
@@ -239,6 +238,8 @@
         .on("change", update);
 
       var valuesAge = ["Any Age"].concat(key.Age);
+      valuesAge[5] = "22-23";
+      console.log(key.Age);
       var valuesGender = ["Any Gender"].concat(key.Gender);
       var valuesOrientation = ["Any Sexual Identity"].concat(key.Sexual_Identity);
       var valuesIncome = ["Any Income"].concat(key.Total_Family_Income);
@@ -329,8 +330,12 @@
             var valid = true;
             for (var prop in choices) {
               if (d[prop] != choices[prop]) {
-                valid = false;
-                break;
+                if (prop == "Age" && choices[prop] == "22-23") {
+                  valid = d[prop] == "23-22";
+                } else {
+                  valid = false;
+                  break;
+                }
               }
             }
             if (valid) {
@@ -401,6 +406,7 @@
         console.log(d, "working on graph text");
         var divStyle = "'text-align: center;'";
         var startTag = "<div style=" + divStyle + ">";
+        var ageRange = d.Age == "23-22" ? "22-23" : d.Age;
         var age = "Age: " + d.Age + "<br>";
         var gender = "Gender: " + d.Gender + "<br>";
         var orientation = "Sexual Identity: " + d.Sexual_Identity + "<br>";
