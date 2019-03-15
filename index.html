@@ -8,18 +8,21 @@
   	<style>
       #main-wrapper {
         width: 1200px;
-        height: 1200px;
+        height: 800px;
       }
 
       #left {
-        width: 40%;
+        width: 35%;
         height: inherit;
         display: inline-block;
       }
 
       #graphsContainer {
-        width: 60%;
+        width: 65%;
         display: inline-block;
+        color: gray;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 14px;
       }
 
       h1 {
@@ -52,7 +55,7 @@
       span {
         color: gray;
         font-family: 'Montserrat', sans-serif;
-        margin: 14px; 
+        margin: 2px 2px 2px 0; 
       }
 
       #filters{
@@ -83,9 +86,9 @@
         border-radius: 3px;
         padding: 4px;
         margin: 8;
-        background-color: #ffffff;
-        width: 20vw;
-        height: 20vh;
+        /* background-color: #ffffff; */
+        width: 50%;/* 20vw; */
+        height: 50%;/* 20vh; */
       }
 
     </style>
@@ -109,7 +112,8 @@
           </span>.</span>
         </div>
         <div></br></br></br></div>
-         <img src="images/a3 legend-08.png" alt="legend" id="legend"> 
+        <div>
+          <img src="images/a3 legend-08.png" alt="legend" id="legend"> 
         </div>
       </div>
 
@@ -192,7 +196,7 @@
     };
 
     // for using csv
-    d3.csv('data/a3_df_inverted_ext.csv')
+    d3.csv('data/a3_df_inverted_days_final.csv')
     .then(function(data) {
       var randomData = randomEntries(data);
 
@@ -256,10 +260,16 @@
       Plotly.plot("graph3", data3, plotLayout, plotAddlParams);
       Plotly.plot("graph4", data4, plotLayout, plotAddlParams);
 
-      var graphTextBox = d3.selectAll(".graphText")
+      var graphTextBox = d3.select("#graphText1")
+        .text(function() {
+
+        })
         .data(randomData)
         .enter()
-        .text(function(d) { return d; });
+        .text(function(d) { 
+          console.log("working on graph text");
+          return d; 
+        });
 
       function update() {
         var choices = {};
@@ -383,17 +393,18 @@
     // Check if data passed in is valid to use
     function validatedValues(d) {
       var data = d[0];
+      console.log(data.Work_Int_Inv);
       if (data != null && typeof data != "undefined") { // != "undefined") {
         if (Object.keys(data).length > 0) {
-          if (parseInt(data.ADPSWORK) > 10 || parseInt(data.ADPSWORK) < 0) {
+          if (parseInt(data.Work_Int_Inv) > 10 || parseInt(data.Work_Int_Inv) < 0) {
             return [];
-          } else if (parseInt(data.ADPSRELS) > 10 || parseInt(data.ADPSRELS) < 0) {
+          } else if (parseInt(data.Relationship_Int_Inv) > 10 || parseInt(data.Relationship_Int_Inv) < 0) {
             return [];
-          } else if (parseInt(data.ADPSSOC) > 10 || parseInt(data.ADPSSOC) < 0) {
+          } else if (parseInt(data.Social_Int_Inv) > 10 || parseInt(data.Social_Int_Inv) < 0) {
             return [];
-          } else if (parseInt(data.ADPSHMGT) > 10 || parseInt(data.ADPSHMGT) < 0) {
+          } else if (parseInt(data.House_Mgmt_Int_Inv) > 10 || parseInt(data.House_Mgmt_Int_Inv) < 0) {
             return [];
-          } else if (parseInt(data.ADPSWORK) > 10 || parseInt(data.ADPSWORK) < 0) {
+          } else if (parseInt(data.Work_Int_Inv) > 10 || parseInt(data.Work_Int_Inv) < 0) {
             return [];
           } else if (!key.Days_Lost.includes(data.Days_Lost)) {
             return [];
@@ -418,10 +429,10 @@
     function setupPlotData(d) {
       console.log(d, "-- dsetup");
       if (d != null && typeof d != "undefined" && Object.keys(d).length > 0) {
-        work = d.ADPSWORK == 0 ? 1 : Math.ceil(parseInt(d.ADPSWORK)/2);
-        rels = d.ADPSRELS == 0 ? 1 : Math.ceil(parseInt(d.ADPSRELS)/2);
-        social = d.ADPSSOC == 0 ? 1 : Math.ceil(parseInt(d.ADPSSOC)/2);
-        house = d.ADPSHMGT == 0 ? 1 : Math.ceil(parseInt(d.ADPSHMGT)/2);
+        work = d.Work_Int_Inv == 0 ? 1 : Math.ceil(parseInt(d.Work_Int_Inv)/2);
+        rels = d.Relationship_Int_Inv == 0 ? 1 : Math.ceil(parseInt(d.Relationship_Int_Inv)/2);
+        social = d.Social_Int_Inv == 0 ? 1 : Math.ceil(parseInt(d.Social_Int_Inv)/2);
+        house = d.House_Mgmt_Int_Inv == 0 ? 1 : Math.ceil(parseInt(d.House_Mgmt_Int_Inv)/2);
         radii = [work, rels, social, house, work];
         console.log(radii, "-- rsetup");
         var colors = blobColor(d);
@@ -436,6 +447,7 @@
              fillcolor: fillColor,
              line: {lineColor, shape: "spline", smoothing: 1.3},
              marker: {line: {width:1, color:'rgba(10,10,10,.40)'}, color:'rgba(250,250,250,1)', size: 10 },
+            hovermode: "closest",
             hoverinfo: "text",
             name: daysLostStr
         }]
